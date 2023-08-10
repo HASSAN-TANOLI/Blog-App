@@ -1,21 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
-  Layout,
   CardActionArea,
   CardMedia,
   Card,
   CardContent,
+  Tooltip,
+  Menu,
+  MenuItem,
+  Button,
+  Stack,
 } from "@mui/material";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HeroImage from "./static/HeroImage.jpg";
 import { MenuList } from "./data/data";
+import Create from "./Create";
+
 const heading1 = {
-  fontSize: "80px",
+  fontSize: "60px",
   fontWeight: "700",
   color: "#000000",
 };
+
+const title = {
+  fontSize: "20px",
+  fontWeight: "700",
+  flexGrow: "1",
+};
+
+const dots = {
+  fontSize: "20px",
+  fontWeight: "700",
+};
+
 const App = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Box
@@ -56,8 +86,8 @@ const App = () => {
       </Box>
 
       <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
-        {MenuList.map((menu) => (
-          <Card sx={{ maxWidth: "390px", display: "flex", m: 2 }}>
+        {MenuList.map((menu, index) => (
+          <Card key={index} sx={{ maxWidth: "390px", display: "flex", m: 2 }}>
             <CardActionArea>
               <CardMedia
                 sx={{ minHeight: "400px" }}
@@ -66,16 +96,53 @@ const App = () => {
                 alt={menu.name}
               ></CardMedia>
               <CardContent>
-                <Typography variant="h5" component={"div"} gutterBottom>
-                  {menu.name}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    component={"div"}
+                    gutterBottom
+                    sx={title}
+                  >
+                    {menu.name}
+                  </Typography>
 
-                <Typography variant="body2">{menu.name}</Typography>
+                  <Tooltip title="click here to update and delete" arrow>
+                    <MoreVertIcon onClick={handleMenuClick} />
+                  </Tooltip>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <MenuItem>Edit Post</MenuItem>
+                    <MenuItem>Delete Post</MenuItem>
+                  </Menu>
+                </Box>
+
+                <Typography variant="body2">{menu.description}</Typography>
               </CardContent>
             </CardActionArea>
           </Card>
         ))}
       </Box>
+      <Create />
     </>
   );
 };

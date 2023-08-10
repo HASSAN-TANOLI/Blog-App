@@ -48,4 +48,12 @@ export const MenuList = [
     image: Gujrati,
     price: 500,
   },
+
+  {
+    name: "sohail",
+    description:
+      "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat, ab!",
+    image: Paneer,
+    price: 500,
+  },
 ];
