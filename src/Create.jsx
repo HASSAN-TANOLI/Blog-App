@@ -25,7 +25,6 @@ const Create = () => {
     if (selectedFile) {
       const imageURL = URL.createObjectURL(selectedFile);
       setSelectedImage(imageURL);
-      console.log(imageURL);
     }
   };
 
