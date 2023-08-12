@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Home from "./Home.jsx";
 import Create from "./Create.jsx";
+import Update from "./Update.jsx";
 import { BrowserRouter, Routes, Route, RouterProvider } from "react-router-dom";
 
 const App = () => {
@@ -11,6 +12,9 @@ const App = () => {
           {" "}
         </Route>
         <Route path="/create" element={<Create />}>
+          {" "}
+        </Route>
+        <Route path="/update" element={<Update />}>
           {" "}
         </Route>
       </Routes>

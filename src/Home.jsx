@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -23,6 +23,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import HeroImage from "./static/HeroImage.jpg";
 import { MenuList } from "./data/data";
 import Create from "./Create";
+import axios from "axios";
 const heading1 = {
   fontSize: "60px",
   fontWeight: "700",
@@ -41,15 +42,50 @@ const dots = {
 };
 
 const Home = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState({});
+  const [data, setData] = useState([]);
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleMenuClick = (event, index) => {
+    setAnchorEl((prevAnchorEl) => ({
+      ...prevAnchorEl,
+      [index]: event.currentTarget,
+    }));
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const handleMenuClose = (index) => {
+    setAnchorEl((prevAnchorEl) => ({
+      ...prevAnchorEl,
+      [index]: null,
+    }));
   };
+
+  function getData() {
+    axios
+      .get("https://64d53932b592423e469546b5.mockapi.io/Blog-App")
+      .then((res) => {
+        const data = res.data;
+        setData(data);
+      });
+  }
+
+  function handleDelete(id) {
+    console.log("Deleting post with ID:", id); // Add this line for debugging
+    axios
+      .delete(`https://64d53932b592423e469546b5.mockapi.io/Blog-App/${id}`)
+      .then(() => {
+        getData();
+      });
+  }
+
+  const setToLocalStorage = (id, title, discription) => {
+    localStorage.setItem("id", id);
+    localStorage.setItem("title", title);
+    localStorage.setItem("discription", discription);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <>
@@ -107,14 +143,22 @@ const Home = () => {
       </Box>
 
       <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
-        {MenuList.map((menu, index) => (
-          <Card key={index} sx={{ maxWidth: "390px", display: "flex", m: 2 }}>
+        {data.map((eachdata, index) => (
+          <Card
+            key={index}
+            sx={{
+              maxWidth: "390px",
+              display: "flex",
+              m: 2,
+              flexBasis: "calc(33.33% - 16px)",
+            }}
+          >
             <CardActionArea>
               <CardMedia
                 sx={{ minHeight: "400px" }}
                 component={"img"}
-                src={menu.image}
-                alt={menu.name}
+                src={eachdata.selectedImage}
+                alt="an image"
               ></CardMedia>
               <CardContent>
                 <Box
@@ -131,18 +175,20 @@ const Home = () => {
                     gutterBottom
                     sx={title}
                   >
-                    {menu.name}
+                    {eachdata.title}
                   </Typography>
 
                   <Tooltip title="click here to update and delete" arrow>
-                    <MoreVertIcon onClick={handleMenuClick} />
+                    <MoreVertIcon
+                      onClick={(event) => handleMenuClick(event, index)}
+                    />
                   </Tooltip>
 
                   <Menu
-                    anchorEl={anchorEl}
+                    anchorEl={anchorEl[index]}
                     keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
+                    open={Boolean(anchorEl[index])}
+                    onClose={() => handleMenuClose(index)}
                     anchorOrigin={{
                       vertical: "bottom",
                       horizontal: "right",
@@ -152,12 +198,26 @@ const Home = () => {
                       horizontal: "right",
                     }}
                   >
-                    <MenuItem>Edit Post</MenuItem>
-                    <MenuItem>Delete Post</MenuItem>
+                    <Link to={`/update?id=${eachdata.id}`}>
+                      <MenuItem
+                        onClick={() =>
+                          setToLocalStorage(
+                            eachdata.id,
+                            eachdata.title,
+                            eachdata.discription
+                          )
+                        }
+                      >
+                        Edit Post
+                      </MenuItem>
+                    </Link>
+                    <MenuItem onClick={() => handleDelete(eachdata.id)}>
+                      Delete Post
+                    </MenuItem>
                   </Menu>
                 </Box>
 
-                <Typography variant="body2">{menu.description}</Typography>
+                <Typography variant="body2">{eachdata.discription}</Typography>
               </CardContent>
             </CardActionArea>
           </Card>

@@ -1,58 +1,45 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  FormControl,
-  InputLabel,
-  FormHelperText,
-  Input,
-  Box,
-  Grid,
   Typography,
-  Container,
-  TextField,
-  Button,
+  Grid,
   Card,
   CardContent,
+  TextField,
+  Button,
+  formHelperTextClasses,
 } from "@mui/material";
+import zIndex from "@mui/material/styles/zIndex";
 import axios from "axios";
-import Home from "./Home";
 import { useNavigate } from "react-router-dom";
-const Create = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
+const Update = () => {
+  const [id, setId] = useState(0);
   const [title, setTitle] = useState("");
-  const [discription, setdiscription] = useState("");
+  const [discription, setDiscription] = useState("");
 
-  const header = { "Access-Control-Allow-Origin": "*" };
   const history = useNavigate();
+  useEffect(() => {
+    setId(localStorage.getItem("id"));
+    setTitle(localStorage.getItem("title"));
+    setDiscription(localStorage.getItem("discription"));
+  }, []);
 
-  const handleSubmit = (event) => {
-    console.log("here");
-    event.preventDefault();
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    console.log("id....", id);
     axios
-      .post("https://64d53932b592423e469546b5.mockapi.io/Blog-App", {
+      .put(`https://64d53932b592423e469546b5.mockapi.io/Blog-App/${id}`, {
         title: title,
         discription: discription,
-        selectedImage: selectedImage,
-        header,
       })
       .then(() => {
         history("/");
       });
   };
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      const imageURL = URL.createObjectURL(selectedFile);
-      setSelectedImage(imageURL);
-      console.log(imageURL);
-    }
-  };
-
   return (
     <>
       <Typography gutterBottom variant="h3" align="center">
-        Add a New Blog
+        Update a blog post
       </Typography>
       <Grid>
         <Card style={{ maxWidth: 650, padding: "20px 5px", margin: "0 auto" }}>
@@ -66,7 +53,9 @@ const Create = () => {
                     variant="outlined"
                     fullWidth
                     required
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    sx={{ zIndex: "99px" }}
                   />
                 </Grid>
 
@@ -79,7 +68,8 @@ const Create = () => {
                     variant="outlined"
                     fullWidth
                     required
-                    onChange={(e) => setdiscription(e.target.value)}
+                    value={discription}
+                    onChange={(e) => setDiscription(e.target.value)}
                   />
                 </Grid>
 
@@ -88,7 +78,6 @@ const Create = () => {
                     accept="image/*"
                     type="file"
                     id="image-upload"
-                    onChange={handleFileChange}
                     style={{ display: "none" }}
                   />
                   <label htmlFor="image-upload">
@@ -103,7 +92,7 @@ const Create = () => {
                   </label>
                 </Grid>
 
-                {selectedImage && (
+                {/* {selectedImage && (
                   <Grid item xs={12}>
                     <img
                       src={selectedImage}
@@ -111,7 +100,7 @@ const Create = () => {
                       style={{ maxWidth: "100%", maxHeight: "300px" }}
                     />
                   </Grid>
-                )}
+                )} */}
 
                 <Grid item xs={12}>
                   <Button
@@ -119,9 +108,9 @@ const Create = () => {
                     variant="contained"
                     color="primary"
                     fullWidth
-                    onClick={handleSubmit}
+                    onClick={handleUpdate}
                   >
-                    Submit
+                    update
                   </Button>
                 </Grid>
               </Grid>
@@ -133,4 +122,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Update;
