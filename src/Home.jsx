@@ -77,6 +77,11 @@ const Home = () => {
       });
   }
 
+  const handleClick = (id) => {
+    console.log("this is clicked");
+    console.log("this is selected state", id);
+  };
+
   const setToLocalStorage = (id, title, discription, selectedImage) => {
     localStorage.setItem("id", id);
     localStorage.setItem("title", title);
@@ -154,7 +159,7 @@ const Home = () => {
               flexBasis: "calc(33.33% - 16px)",
             }}
           >
-            <CardActionArea>
+            <CardActionArea onClick={() => handleClick(eachdata.id)}>
               <CardMedia
                 sx={{ minHeight: "400px" }}
                 component={"img"}
