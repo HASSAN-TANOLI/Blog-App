@@ -8,32 +8,55 @@ import {
   Button,
   formHelperTextClasses,
 } from "@mui/material";
-import zIndex from "@mui/material/styles/zIndex";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const Update = () => {
   const [id, setId] = useState(0);
   const [title, setTitle] = useState("");
   const [discription, setDiscription] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const history = useNavigate();
   useEffect(() => {
     setId(localStorage.getItem("id"));
     setTitle(localStorage.getItem("title"));
     setDiscription(localStorage.getItem("discription"));
+    setSelectedImage(localStorage.getItem("selectedImage"));
   }, []);
 
   const handleUpdate = (e) => {
     e.preventDefault();
     console.log("id....", id);
+    console.log("this image has been selected", selectedImage);
     axios
       .put(`https://64d53932b592423e469546b5.mockapi.io/Blog-App/${id}`, {
         title: title,
         discription: discription,
+        selectedImage: selectedImage,
       })
       .then(() => {
         history("/");
       });
+  };
+
+  const handleFileChange = (event) => {
+    setSelectedImage(event.target.value);
+    console.log("this is selected state", setSelectedImage);
+  };
+
+  const handleSelectedImageChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      const imageURL = URL.createObjectURL(selectedFile);
+      setSelectedImage(imageURL);
+      console.log(imageURL);
+    }
+  };
+
+  const handleBoth = (event) => {
+    handleFileChange(event);
+    handleSelectedImageChange(event);
   };
 
   return (
@@ -78,6 +101,7 @@ const Update = () => {
                     accept="image/*"
                     type="file"
                     id="image-upload"
+                    onChange={handleBoth}
                     style={{ display: "none" }}
                   />
                   <label htmlFor="image-upload">
@@ -92,7 +116,7 @@ const Update = () => {
                   </label>
                 </Grid>
 
-                {/* {selectedImage && (
+                {selectedImage && (
                   <Grid item xs={12}>
                     <img
                       src={selectedImage}
@@ -100,7 +124,7 @@ const Update = () => {
                       style={{ maxWidth: "100%", maxHeight: "300px" }}
                     />
                   </Grid>
-                )} */}
+                )}
 
                 <Grid item xs={12}>
                   <Button

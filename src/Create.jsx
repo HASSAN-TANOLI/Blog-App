@@ -61,8 +61,8 @@ const Create = () => {
               <Grid container spacing={4}>
                 <Grid item xs={12}>
                   <TextField
-                    placeholder="Enter Product Title"
-                    label="Product Title"
+                    placeholder="Enter Post Title"
+                    label="Post Title"
                     variant="outlined"
                     fullWidth
                     required

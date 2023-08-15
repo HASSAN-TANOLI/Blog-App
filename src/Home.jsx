@@ -77,10 +77,11 @@ const Home = () => {
       });
   }
 
-  const setToLocalStorage = (id, title, discription) => {
+  const setToLocalStorage = (id, title, discription, selectedImage) => {
     localStorage.setItem("id", id);
     localStorage.setItem("title", title);
     localStorage.setItem("discription", discription);
+    localStorage.setItem("selectedImage", selectedImage);
   };
 
   useEffect(() => {
@@ -204,7 +205,8 @@ const Home = () => {
                           setToLocalStorage(
                             eachdata.id,
                             eachdata.title,
-                            eachdata.discription
+                            eachdata.discription,
+                            eachdata.selectedImage
                           )
                         }
                       >
